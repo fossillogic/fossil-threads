@@ -20,9 +20,15 @@
 #include <windows.h>
 typedef LPVOID fossil_fiber_t;
 #else
-#define _XOPEN_SOURCE 700  // Ensure this is defined to use ucontext
-#include <ucontext.h>
-typedef ucontext_t* fossil_fiber_t;
+#include <pthread.h>
+#include <stdlib.h>
+
+// Define a custom fiber structure
+typedef struct {
+    pthread_t thread;
+    void *(*task)(void *);
+    void *arg;
+} fossil_fiber_t;
 #endif
 
 #ifdef __cplusplus
