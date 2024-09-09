@@ -12,6 +12,7 @@
  * -----------------------------------------------------------------------------
  */
 #include "fossil/threads/sync.h"
+#include <stdlib.h>
 
 /* -------- Syncronization Primitives Implementation -------- */
 

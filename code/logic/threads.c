@@ -12,6 +12,7 @@
  * -----------------------------------------------------------------------------
  */
 #include "fossil/threads/threads.h"
+#include <stdlib.h>
 
 /* -------- Kernel Threads Implementation -------- */
 

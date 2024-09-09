@@ -12,6 +12,7 @@
  * -----------------------------------------------------------------------------
  */
 #include "fossil/threads/fiber.h"
+#include <stdlib.h>
 
 /* -------- Fiber Implementation -------- */
 
