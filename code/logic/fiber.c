@@ -13,6 +13,7 @@
  */
 #include "fossil/threads/fiber.h"
 
+
 fossil_fiber_t fossil_fiber_create(size_t stack_size, void (*task)(void *), void *arg) {
 #ifdef _WIN32
     return CreateFiber(stack_size, (LPFIBER_START_ROUTINE)task, arg);
