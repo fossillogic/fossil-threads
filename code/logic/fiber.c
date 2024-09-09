@@ -13,6 +13,7 @@
  */
 #include "fossil/threads/fiber.h"
 
+/* -------- Fiber Implementation -------- */
 
 fossil_fiber_t fossil_fiber_create(size_t stack_size, void (*task)(void *), void *arg) {
 #ifdef _WIN32

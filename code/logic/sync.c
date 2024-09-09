@@ -13,6 +13,7 @@
  */
 #include "fossil/threads/sync.h"
 
+/* -------- Syncronization Primitives Implementation -------- */
 
 int32_t fossil_mutex_create(fossil_mutex_t *mutex) {
 #ifdef _WIN32

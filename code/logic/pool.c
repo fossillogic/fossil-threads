@@ -13,6 +13,8 @@
  */
 #include "fossil/threads/pool.h"
 
+/* Task-based Concurrency (Thread Pool) */
+
 typedef struct task_queue_t {
     void *(*task_func)(void *);
     void *arg;
