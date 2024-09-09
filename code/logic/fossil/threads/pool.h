@@ -17,6 +17,12 @@
 #include "threads.h"
 #include "sync.h"
 
+typedef struct task_queue_t {
+    void *(*task_func)(void *);
+    void *arg;
+    struct task_queue_t *next;
+} task_queue_t;
+
 /* Task-based Concurrency (Thread Pool) */
 typedef struct fossil_thread_pool_t {
     fossil_thread_t *threads;

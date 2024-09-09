@@ -12,14 +12,9 @@
  * -----------------------------------------------------------------------------
  */
 #include "fossil/threads/pool.h"
+#include <stdlib.h>
 
 /* Task-based Concurrency (Thread Pool) */
-
-typedef struct task_queue_t {
-    void *(*task_func)(void *);
-    void *arg;
-    struct task_queue_t *next;
-} task_queue_t;
 
 static void *worker_thread(void *arg) {
     fossil_thread_pool_t *pool = (fossil_thread_pool_t *)arg;
