@@ -15,11 +15,18 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
+// Define a struct to hold the task function and its argument
+typedef struct {
+    void *(*task)(void *);
+    void *arg;
+} thread_data_t;
+
 // Windows-specific thread start function wrapper
 static DWORD WINAPI fossil_thread_wrapper(LPVOID arg) {
-    void *(*task)(void *) = ((void ***)arg)[0];  // Extract the task function
-    void *task_arg = ((void ***)arg)[1];         // Extract the task argument
-    free(arg);  // Free the allocated memory
+    thread_data_t *data = (thread_data_t *)arg;
+    void *(*task)(void *) = data->task;
+    void *task_arg = data->arg;
+    free(data);  // Free the allocated memory
     task(task_arg);  // Call the original task function
     return 0;
 }
@@ -29,9 +36,12 @@ static DWORD WINAPI fossil_thread_wrapper(LPVOID arg) {
 
 int32_t fossil_thread_create(fossil_thread_t *thread, fossil_thread_attr_t *attr, void *(*task)(void *), void *arg) {
 #ifdef _WIN32
-    void **thread_data = malloc(2 * sizeof(void *));
-    thread_data[0] = task;
-    thread_data[1] = arg;
+    // Allocate and initialize thread data
+    thread_data_t *thread_data = malloc(sizeof(thread_data_t));
+    if (!thread_data) return -1;
+
+    thread_data->task = task;
+    thread_data->arg = arg;
 
     DWORD thread_id;
     *thread = CreateThread(
