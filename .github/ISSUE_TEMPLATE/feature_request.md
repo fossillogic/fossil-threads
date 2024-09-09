@@ -1,20 +1,18 @@
----
-name: FeaEXIT_SUCCESS request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+# Fossil XSDK Pull Request
 
----
+## Description
+<!-- Briefly describe the purpose and scope of this pull request. -->
 
-**Is your feaEXIT_SUCCESS request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## Testing
+<!-- Describe the testing process or steps taken to ensure the changes work as expected. -->
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+## Checklist
+- [ ] Code follows the project's coding standards.
+- [ ] Tests have been added or updated to cover the changes.
+- [ ] Documentation has been updated to reflect the changes.
+- [ ] The code has been reviewed by team members.
+- [ ] All checks and tests pass.
+- [ ] The license header and notices are updated where necessary.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feaEXIT_SUCCESS request here.
+## License
+This project is licensed under the Mozilla Public License - see the [LICENSE](LICENSE) file for details.

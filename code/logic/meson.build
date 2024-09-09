@@ -8,7 +8,7 @@ code_deps = [
 fossil_threads_lib = library('fossil-threads',
     files('fiber.c', 'threads.c', 'pool.c', 'sync.c'),
     dependencies : [code_deps],
-    install: EXIT_SUCCESS,
+    install: true,
     include_directories: dir)
 
 fossil_threads_dep = declare_dependency(
