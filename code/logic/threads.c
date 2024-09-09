@@ -14,16 +14,31 @@
 #include "fossil/threads/threads.h"
 #include <stdlib.h>
 
+#ifdef _WIN32
+// Windows-specific thread start function wrapper
+static DWORD WINAPI fossil_thread_wrapper(LPVOID arg) {
+    void *(*task)(void *) = ((void ***)arg)[0];  // Extract the task function
+    void *task_arg = ((void ***)arg)[1];         // Extract the task argument
+    free(arg);  // Free the allocated memory
+    task(task_arg);  // Call the original task function
+    return 0;
+}
+#endif
+
 /* -------- Kernel Threads Implementation -------- */
 
 int32_t fossil_thread_create(fossil_thread_t *thread, fossil_thread_attr_t *attr, void *(*task)(void *), void *arg) {
 #ifdef _WIN32
+    void **thread_data = malloc(2 * sizeof(void *));
+    thread_data[0] = task;
+    thread_data[1] = arg;
+
     DWORD thread_id;
     *thread = CreateThread(
         attr ? (LPSECURITY_ATTRIBUTES) attr : NULL,
         attr ? attr->stack_size : 0,
-        (LPTHREAD_START_ROUTINE)task,
-        arg,
+        fossil_thread_wrapper,  // Call the wrapper instead of the original task
+        thread_data,            // Pass both task and argument to the wrapper
         attr && attr->detach_state ? CREATE_SUSPENDED : 0,
         &thread_id
     );
