@@ -20,6 +20,7 @@
 #include <windows.h>
 typedef LPVOID fossil_fiber_t;
 #else
+#define _XOPEN_SOURCE 700  // Ensure this is defined to use ucontext
 #include <ucontext.h>
 typedef ucontext_t* fossil_fiber_t;
 #endif
