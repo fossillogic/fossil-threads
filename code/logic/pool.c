@@ -70,7 +70,7 @@ int32_t fossil_thread_pool_create(fossil_thread_pool_t *pool, uint32_t num_threa
     return 0;
 }
 
-int32_t fossil_thread_pool_submit(fossil_thread_pool_t *pool, void *(*task)(void *), void *arg) {
+int32_t fossil_thread_pool_submit(fossil_thread_pool_t *pool, fossil_task_t task, fossil_argumet_t arg) {
     task_queue_t *new_task = (task_queue_t *)malloc(sizeof(task_queue_t));
     if (!new_task) return -1;
 

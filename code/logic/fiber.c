@@ -12,136 +12,45 @@
  * -----------------------------------------------------------------------------
  */
 #include "fossil/threads/fiber.h"
-#include <stdlib.h>
 
+fossil_fiber_t fossil_fiber_create(size_t stack_size, void (*task)(void *), void *arg) {
 #ifdef _WIN32
-
-static LPVOID main_fiber = NULL;
-static fossil_fiber_t *current_fiber = NULL;
-
-static void fiber_entry(void *arg) {
-    fossil_fiber_t *fiber = (fossil_fiber_t *)arg;
-    fiber->task(fiber->arg);
-    fossil_fiber_delete((fossil_fiber_t)fiber);
-    SwitchToFiber(main_fiber);
-}
-
-fossil_fiber_t fossil_fiber_create(size_t stack_size, void (*task)(void *), void *arg) {
-    fossil_fiber_t *fiber = (fossil_fiber_t *)malloc(sizeof(fossil_fiber_t));
-    if (!fiber) {
-        perror("Failed to allocate memory for fiber");
-        exit(EXIT_FAILURE);
-    }
-
-    fiber->task = task;
-    fiber->arg = arg;
-    fiber->stack_size = stack_size;
-
-    fiber->fiber = CreateFiber(stack_size, fiber_entry, fiber);
-    if (!fiber->fiber) {
-        perror("Failed to create fiber");
-        free(fiber);
-        exit(EXIT_FAILURE);
-    }
-
-    return (fossil_fiber_t)fiber;
-}
-
-void fossil_fiber_switch(fossil_fiber_t fiber) {
-    fossil_fiber_t *next_fiber = (fossil_fiber_t *)fiber;
-    if (current_fiber) {
-        SwitchToFiber(next_fiber->fiber);
-    } else {
-        current_fiber = next_fiber;
-        main_fiber = ConvertThreadToFiber(NULL);
-        SwitchToFiber(next_fiber->fiber);
-    }
-}
-
-void fossil_fiber_delete(fossil_fiber_t fiber) {
-    fossil_fiber_t *fiber_to_delete = (fossil_fiber_t *)fiber;
-    if (fiber_to_delete) {
-        DeleteFiber(fiber_to_delete->fiber);
-        free(fiber_to_delete);
-    }
-}
-
-fossil_fiber_t fossil_fiber_convert(void *arg) {
-    fossil_fiber_t *fiber = (fossil_fiber_t *)malloc(sizeof(fossil_fiber_t));
-    if (!fiber) {
-        perror("Failed to allocate memory for fiber");
-        exit(EXIT_FAILURE);
-    }
-
-    fiber->task = NULL;
-    fiber->arg = arg;
-    fiber->stack_size = 0;
-    fiber->fiber = ConvertThreadToFiber(fiber);
-
-    if (!fiber->fiber) {
-        perror("Failed to convert thread to fiber");
-        free(fiber);
-        exit(EXIT_FAILURE);
-    }
-
-    return (fossil_fiber_t)fiber;
-}
-
+    return CreateFiber(stack_size, (LPFIBER_START_ROUTINE)task, arg);
 #else
-
-static pthread_t main_thread;
-static fossil_fiber_t *current_fiber = NULL;
-
-static void *fiber_entry(void *arg) {
-    fossil_fiber_t *fiber = (fossil_fiber_t *)arg;
-    fiber->task(fiber->arg);
-    fossil_fiber_delete((fossil_fiber_t)fiber);
-    pthread_exit(NULL);
-}
-
-fossil_fiber_t fossil_fiber_create(size_t stack_size, void (*task)(void *), void *arg) {
-    fossil_fiber_t *fiber = (fossil_fiber_t *)malloc(sizeof(fossil_fiber_t));
-    if (!fiber) {
-        perror("Failed to allocate memory for fiber");
-        exit(EXIT_FAILURE);
-    }
-    
-    fiber->task = task;
-    fiber->arg = arg;
-    fiber->stack_size = stack_size;
-
-    pthread_attr_init(&fiber->attr);
-    pthread_attr_setstacksize(&fiber->attr, stack_size);
-
-    if (pthread_create(&fiber->thread, &fiber->attr, fiber_entry, fiber) != 0) {
-        perror("Failed to create thread");
-        free(fiber);
-        exit(EXIT_FAILURE);
-    }
-
-    pthread_attr_destroy(&fiber->attr);
-    return (fossil_fiber_t)fiber;
+    ucontext_t *fiber = (ucontext_t *)malloc(sizeof(ucontext_t));
+    if (!fiber) return NULL;
+    getcontext(fiber);
+    fiber->uc_stack.ss_sp = malloc(stack_size);
+    fiber->uc_stack.ss_size = stack_size;
+    makecontext(fiber, (void (*)(void))task, 1, arg);
+    return fiber;
+#endif
 }
 
 void fossil_fiber_switch(fossil_fiber_t fiber) {
-    fossil_fiber_t *next_fiber = (fossil_fiber_t *)fiber;
-    if (current_fiber) {
-        pthread_join(current_fiber->thread, NULL);
-    }
-    current_fiber = next_fiber;
-    pthread_join(next_fiber->thread, NULL);
+#ifdef _WIN32
+    SwitchToFiber(fiber);
+#else
+    ucontext_t *current_context = (ucontext_t *)malloc(sizeof(ucontext_t));
+    getcontext(current_context);
+    swapcontext(current_context, (ucontext_t *)fiber);
+#endif
 }
 
 void fossil_fiber_delete(fossil_fiber_t fiber) {
-    fossil_fiber_t *fiber_to_delete = (fossil_fiber_t *)fiber;
-    if (fiber_to_delete) {
-        pthread_cancel(fiber_to_delete->thread);
-        free(fiber_to_delete);
-    }
+#ifdef _WIN32
+    DeleteFiber(fiber);
+#else
+    ucontext_t *f = (ucontext_t *)fiber;
+    free(f->uc_stack.ss_sp);
+    free(f);
+#endif
 }
 
 fossil_fiber_t fossil_fiber_convert(void *arg) {
+#ifdef _WIN32
+    return ConvertThreadToFiber(arg);
+#else
     return NULL; // Not available in POSIX
-}
-
 #endif
+}

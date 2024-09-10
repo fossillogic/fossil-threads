@@ -16,28 +16,19 @@
 
 #include <stdint.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-
 #ifdef _WIN32
 #include <windows.h>
-typedef struct fossil_fiber {
-    LPVOID fiber;
-    void (*task)(void *);
-    void *arg;
-    void *stack;
-    size_t stack_size;
-} fossil_fiber_t;
+typedef LPVOID fossil_fiber_t;
 #else
 #include <pthread.h>
-typedef struct fossil_fiber {
-    pthread_t thread;
-    void (*task)(void *);
-    void *arg;
-    size_t stack_size;
-    pthread_attr_t attr;
-} fossil_fiber_t;
+#include <stdlib.h>
 
+// Define a custom fiber structure
+typedef struct {
+    pthread_t thread;
+    void *(*task)(void *);
+    void *arg;
+} fossil_fiber_t;
 #endif
 
 #ifdef __cplusplus

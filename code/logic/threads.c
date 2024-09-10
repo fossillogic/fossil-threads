@@ -34,7 +34,7 @@ static DWORD WINAPI fossil_thread_wrapper(LPVOID arg) {
 
 /* -------- Kernel Threads Implementation -------- */
 
-int32_t fossil_thread_create(fossil_thread_t *thread, fossil_thread_attr_t *attr, void *(*task)(void *), void *arg) {
+int32_t fossil_thread_create(fossil_thread_t *thread, fossil_thread_attr_t *attr, fossil_task_t task, fossil_argumet_t arg) {
 #ifdef _WIN32
     // Allocate and initialize thread data
     thread_data_t *thread_data = malloc(sizeof(thread_data_t));

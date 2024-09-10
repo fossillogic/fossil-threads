@@ -56,7 +56,7 @@ int32_t fossil_thread_pool_create(fossil_thread_pool_t *pool, uint32_t num_threa
  * @param arg Argument to pass to the task function.
  * @return int32_t 0 if the task is successfully submitted, -1 otherwise.
  */
-int32_t fossil_thread_pool_submit(fossil_thread_pool_t *pool, void *(*task)(void *), void *arg);
+int32_t fossil_thread_pool_submit(fossil_thread_pool_t *pool, fossil_task_t task, fossil_argumet_t arg);
 
 /**
  * @brief Destroys the thread pool and reclaims its resources.

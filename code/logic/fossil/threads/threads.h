@@ -23,10 +23,14 @@ typedef struct {
     DWORD stack_size;
     int32_t detach_state;
 } fossil_thread_attr_t;
+typedef LPVOID *(*fossil_task_t)(LPVOID *);
+typedef LPVOID fossil_argumet_t;
 #else
 #include <pthread.h>
 typedef pthread_t fossil_thread_t;
 typedef pthread_attr_t fossil_thread_attr_t;
+typedef void *(*fossil_task_t)(void *);
+typedef void * fossil_argumet_t;
 #endif
 
 #ifdef __cplusplus
@@ -42,7 +46,7 @@ extern "C" {
  * @param arg Argument to pass to the task function.
  * @return int32_t 0 if the thread is successfully created, -1 otherwise.
  */
-int32_t fossil_thread_create(fossil_thread_t *thread, fossil_thread_attr_t *attr, void *(*task)(void *), void *arg);
+int32_t fossil_thread_create(fossil_thread_t *thread, fossil_thread_attr_t *attr, fossil_task_t task, fossil_argumet_t arg);
 
 /**
  * @brief Waits for the specified thread to terminate and retrieves the thread's exit status.
