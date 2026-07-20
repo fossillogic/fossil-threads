@@ -17,12 +17,12 @@
  * under the License.
  *
  * Author: Michael Gene Brockus (Dreamer)
- * Date: 04/05/2014
+ * Date: 04/05/2013
  *
- * Copyright (C) 2014-2025 Fossil Logic. All rights reserved.
+ * Copyright (C) 2013-Current Fossil Logic. All rights reserved.
  * -----------------------------------------------------------------------------
  */
-#include <fossil/pizza/framework.h>
+#include <fossil/maip/framework.h>
 #include "fossil/threads/framework.h"
 
 
@@ -33,7 +33,7 @@
 // mock objects are set here.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_SUITE(c_mutex_fixture);
+FOSSIL_SUITE(c_mutex_fixture);
 
 FOSSIL_SETUP(c_mutex_fixture) {
     // Setup the test fixture
@@ -51,7 +51,7 @@ FOSSIL_TEARDOWN(c_mutex_fixture) {
 // as samples for library usage.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_CASE(c_thread_mutex_init_dispose) {
+FOSSIL_TEST(c_thread_mutex_init_dispose) {
     fossil_threads_mutex_t m;
     int rc = fossil_threads_mutex_init(&m);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_OK);
@@ -60,7 +60,7 @@ FOSSIL_TEST_CASE(c_thread_mutex_init_dispose) {
     ASSUME_ITS_FALSE(fossil_threads_mutex_is_initialized(&m));
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_lock_unlock) {
+FOSSIL_TEST(c_thread_mutex_lock_unlock) {
     fossil_threads_mutex_t m;
     int rc = fossil_threads_mutex_init(&m);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_OK);
@@ -76,7 +76,7 @@ FOSSIL_TEST_CASE(c_thread_mutex_lock_unlock) {
     fossil_threads_mutex_dispose(&m);
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_trylock) {
+FOSSIL_TEST(c_thread_mutex_trylock) {
     fossil_threads_mutex_t m;
     int rc = fossil_threads_mutex_init(&m);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_OK);
@@ -96,12 +96,12 @@ FOSSIL_TEST_CASE(c_thread_mutex_trylock) {
     fossil_threads_mutex_dispose(&m);
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_init_null) {
+FOSSIL_TEST(c_thread_mutex_init_null) {
     int rc = fossil_threads_mutex_init(NULL);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_dispose_twice) {
+FOSSIL_TEST(c_thread_mutex_dispose_twice) {
     fossil_threads_mutex_t m;
     int rc = fossil_threads_mutex_init(&m);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_OK);
@@ -109,7 +109,7 @@ FOSSIL_TEST_CASE(c_thread_mutex_dispose_twice) {
     fossil_threads_mutex_dispose(&m); // Should be safe, no crash
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_lock_invalid) {
+FOSSIL_TEST(c_thread_mutex_lock_invalid) {
     int rc = fossil_threads_mutex_lock(NULL);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_EINVAL);
 
@@ -119,7 +119,7 @@ FOSSIL_TEST_CASE(c_thread_mutex_lock_invalid) {
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_unlock_invalid) {
+FOSSIL_TEST(c_thread_mutex_unlock_invalid) {
     int rc = fossil_threads_mutex_unlock(NULL);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_EINVAL);
 
@@ -129,7 +129,7 @@ FOSSIL_TEST_CASE(c_thread_mutex_unlock_invalid) {
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_trylock_invalid) {
+FOSSIL_TEST(c_thread_mutex_trylock_invalid) {
     int rc = fossil_threads_mutex_trylock(NULL);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_EINVAL);
 
@@ -139,7 +139,7 @@ FOSSIL_TEST_CASE(c_thread_mutex_trylock_invalid) {
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_reset) {
+FOSSIL_TEST(c_thread_mutex_reset) {
     fossil_threads_mutex_t m;
     int rc = fossil_threads_mutex_init(&m);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_OK);
@@ -153,7 +153,7 @@ FOSSIL_TEST_CASE(c_thread_mutex_reset) {
     ASSUME_ITS_FALSE(fossil_threads_mutex_is_locked(&m));
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_is_locked_unlocked) {
+FOSSIL_TEST(c_thread_mutex_is_locked_unlocked) {
     fossil_threads_mutex_t m;
     int rc = fossil_threads_mutex_init(&m);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_MUTEX_OK);
@@ -171,11 +171,11 @@ FOSSIL_TEST_CASE(c_thread_mutex_is_locked_unlocked) {
     fossil_threads_mutex_dispose(&m);
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_is_initialized_null) {
+FOSSIL_TEST(c_thread_mutex_is_initialized_null) {
     ASSUME_ITS_FALSE(fossil_threads_mutex_is_initialized(NULL));
 }
 
-FOSSIL_TEST_CASE(c_thread_mutex_is_locked_null) {
+FOSSIL_TEST(c_thread_mutex_is_locked_null) {
     ASSUME_ITS_FALSE(fossil_threads_mutex_is_locked(NULL));
 }
 
@@ -183,18 +183,18 @@ FOSSIL_TEST_CASE(c_thread_mutex_is_locked_null) {
 // * Fossil Logic Test Pool
 // * * * * * * * * * * * * * * * * * * * * * * * *
 FOSSIL_TEST_GROUP(c_mutex_tests) {
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_init_dispose);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_lock_unlock);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_trylock);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_init_null);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_dispose_twice);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_lock_invalid);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_unlock_invalid);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_trylock_invalid);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_reset);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_is_locked_unlocked);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_is_initialized_null);
-    FOSSIL_TEST_ADD(c_mutex_fixture, c_thread_mutex_is_locked_null);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_init_dispose);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_lock_unlock);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_trylock);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_init_null);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_dispose_twice);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_lock_invalid);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_unlock_invalid);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_trylock_invalid);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_reset);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_is_locked_unlocked);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_is_initialized_null);
+    FOSSIL_ADD_TEST(c_mutex_fixture, c_thread_mutex_is_locked_null);
 
-    FOSSIL_TEST_REGISTER(c_mutex_fixture);
+    FOSSIL_ADD_SUITE(c_mutex_fixture);
 } // end of tests

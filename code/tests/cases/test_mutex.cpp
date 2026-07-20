@@ -17,12 +17,12 @@
  * under the License.
  *
  * Author: Michael Gene Brockus (Dreamer)
- * Date: 04/05/2014
+ * Date: 04/05/2013
  *
- * Copyright (C) 2014-2025 Fossil Logic. All rights reserved.
+ * Copyright (C) 2013-Current Fossil Logic. All rights reserved.
  * -----------------------------------------------------------------------------
  */
-#include <fossil/pizza/framework.h>
+#include <fossil/maip/framework.h>
 #include "fossil/threads/framework.h"
 
 
@@ -33,7 +33,7 @@
 // mock objects are set here.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_SUITE(cpp_mutex_fixture);
+FOSSIL_SUITE(cpp_mutex_fixture);
 
 FOSSIL_SETUP(cpp_mutex_fixture) {
     // Setup the test fixture
@@ -51,7 +51,7 @@ FOSSIL_TEARDOWN(cpp_mutex_fixture) {
 // as samples for library usage.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_trylock_success) {
+FOSSIL_TEST(cpp_thread_mutex_trylock_success) {
     fossil::threads::Mutex m;
     bool locked = m.try_lock();
     ASSUME_ITS_EQUAL_I32(locked, true);
@@ -63,7 +63,7 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_trylock_success) {
     m.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_lock_blocks_other_thread_trylock) {
+FOSSIL_TEST(cpp_thread_mutex_lock_blocks_other_thread_trylock) {
     fossil::threads::Mutex m;
     std::atomic<bool> started{false};
 
@@ -101,7 +101,7 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_lock_blocks_other_thread_trylock) {
     m.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_lock_unlock_sequence) {
+FOSSIL_TEST(cpp_thread_mutex_lock_unlock_sequence) {
     // Basic lock/unlock sequence using LockGuard RAII
     fossil::threads::Mutex m;
     for (int i = 0; i < 3; ++i) {
@@ -122,7 +122,7 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_lock_unlock_sequence) {
     ASSUME_ITS_EQUAL_I32(1, 1);
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_raii_basic) {
+FOSSIL_TEST(cpp_thread_mutex_raii_basic) {
     fossil::threads::Mutex m;
     // Should be able to lock/unlock without exceptions
     m.lock();
@@ -133,7 +133,7 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_raii_basic) {
     m.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_raii_lockguard) {
+FOSSIL_TEST(cpp_thread_mutex_raii_lockguard) {
     fossil::threads::Mutex m;
     {
         fossil::threads::Mutex::LockGuard g(m);
@@ -145,7 +145,7 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_raii_lockguard) {
     m.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_raii_move_ctor) {
+FOSSIL_TEST(cpp_thread_mutex_raii_move_ctor) {
     fossil::threads::Mutex m;
     m.lock();
     m.unlock();
@@ -156,7 +156,7 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_raii_move_ctor) {
     m2.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_raii_move_assign) {
+FOSSIL_TEST(cpp_thread_mutex_raii_move_assign) {
     fossil::threads::Mutex m;
     fossil::threads::Mutex m2;
     m.lock();
@@ -168,14 +168,14 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_raii_move_assign) {
     m2.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_raii_try_lock_for) {
+FOSSIL_TEST(cpp_thread_mutex_raii_try_lock_for) {
     fossil::threads::Mutex m;
     bool ok = m.try_lock_for(std::chrono::milliseconds(10));
     ASSUME_ITS_EQUAL_I32(ok, true);
     m.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_raii_try_lock_until) {
+FOSSIL_TEST(cpp_thread_mutex_raii_try_lock_until) {
     fossil::threads::Mutex m;
     auto tp = std::chrono::steady_clock::now() + std::chrono::milliseconds(50);
     bool ok = m.try_lock_until(tp);
@@ -183,7 +183,7 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_raii_try_lock_until) {
     m.unlock();
 }
 
-FOSSIL_TEST_CASE(cpp_thread_mutex_raii_exceptions) {
+FOSSIL_TEST(cpp_thread_mutex_raii_exceptions) {
     fossil::threads::Mutex m;
     // forcibly move-from to invalidate
     fossil::threads::Mutex m2(std::move(m));
@@ -208,16 +208,16 @@ FOSSIL_TEST_CASE(cpp_thread_mutex_raii_exceptions) {
 }
 
 FOSSIL_TEST_GROUP(cpp_mutex_tests) {
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_trylock_success);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_lock_blocks_other_thread_trylock);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_lock_unlock_sequence);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_raii_basic);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_raii_lockguard);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_raii_move_ctor);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_raii_move_assign);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_raii_try_lock_for);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_raii_try_lock_until);
-    FOSSIL_TEST_ADD(cpp_mutex_fixture, cpp_thread_mutex_raii_exceptions);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_trylock_success);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_lock_blocks_other_thread_trylock);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_lock_unlock_sequence);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_raii_basic);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_raii_lockguard);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_raii_move_ctor);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_raii_move_assign);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_raii_try_lock_for);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_raii_try_lock_until);
+    FOSSIL_ADD_TEST(cpp_mutex_fixture, cpp_thread_mutex_raii_exceptions);
 
-    FOSSIL_TEST_REGISTER(cpp_mutex_fixture);
+    FOSSIL_ADD_SUITE(cpp_mutex_fixture);
 } // end of tests

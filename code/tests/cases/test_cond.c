@@ -17,12 +17,12 @@
  * under the License.
  *
  * Author: Michael Gene Brockus (Dreamer)
- * Date: 04/05/2014
+ * Date: 04/05/2013
  *
- * Copyright (C) 2014-2025 Fossil Logic. All rights reserved.
+ * Copyright (C) 2013-Current Fossil Logic. All rights reserved.
  * -----------------------------------------------------------------------------
  */
-#include <fossil/pizza/framework.h>
+#include <fossil/maip/framework.h>
 #include "fossil/threads/framework.h"
 
 
@@ -33,7 +33,7 @@
 // mock objects are set here.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_SUITE(c_cond_fixture);
+FOSSIL_SUITE(c_cond_fixture);
 
 FOSSIL_SETUP(c_cond_fixture) {
     // Setup the test fixture
@@ -51,7 +51,7 @@ FOSSIL_TEARDOWN(c_cond_fixture) {
 // as samples for library usage.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_CASE(c_cond_init_and_dispose) {
+FOSSIL_TEST(c_cond_init_and_dispose) {
     fossil_threads_cond_t cond;
     int rc = fossil_threads_cond_init(&cond);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_COND_OK);
@@ -61,12 +61,12 @@ FOSSIL_TEST_CASE(c_cond_init_and_dispose) {
     ASSUME_ITS_EQUAL_I32(cond.valid, 0);
 }
 
-FOSSIL_TEST_CASE(c_cond_init_null) {
+FOSSIL_TEST(c_cond_init_null) {
     int rc = fossil_threads_cond_init(NULL);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_cond_signal_and_broadcast_invalid) {
+FOSSIL_TEST(c_cond_signal_and_broadcast_invalid) {
     fossil_threads_cond_t cond;
     memset(&cond, 0, sizeof(cond));
     int rc1 = fossil_threads_cond_signal(NULL);
@@ -79,7 +79,7 @@ FOSSIL_TEST_CASE(c_cond_signal_and_broadcast_invalid) {
     ASSUME_ITS_EQUAL_I32(rc4, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_cond_wait_invalid) {
+FOSSIL_TEST(c_cond_wait_invalid) {
     fossil_threads_cond_t cond;
     fossil_threads_mutex_t mutex;
     memset(&cond, 0, sizeof(cond));
@@ -94,7 +94,7 @@ FOSSIL_TEST_CASE(c_cond_wait_invalid) {
     ASSUME_ITS_EQUAL_I32(rc4, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_cond_timedwait_invalid) {
+FOSSIL_TEST(c_cond_timedwait_invalid) {
     fossil_threads_cond_t cond;
     fossil_threads_mutex_t mutex;
     memset(&cond, 0, sizeof(cond));
@@ -109,7 +109,7 @@ FOSSIL_TEST_CASE(c_cond_timedwait_invalid) {
     ASSUME_ITS_EQUAL_I32(rc4, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_cond_is_valid_and_waiter_count) {
+FOSSIL_TEST(c_cond_is_valid_and_waiter_count) {
     fossil_threads_cond_t cond;
     int rc = fossil_threads_cond_init(&cond);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_COND_OK);
@@ -124,7 +124,7 @@ FOSSIL_TEST_CASE(c_cond_is_valid_and_waiter_count) {
     ASSUME_ITS_TRUE(fossil_threads_cond_waiter_count(NULL) < 0);
 }
 
-FOSSIL_TEST_CASE(c_cond_reset) {
+FOSSIL_TEST(c_cond_reset) {
     fossil_threads_cond_t cond;
     int rc = fossil_threads_cond_init(&cond);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_COND_OK);
@@ -138,7 +138,7 @@ FOSSIL_TEST_CASE(c_cond_reset) {
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(c_cond_waiter_count_increments_and_decrements) {
+FOSSIL_TEST(c_cond_waiter_count_increments_and_decrements) {
     fossil_threads_cond_t cond;
     fossil_threads_mutex_t mutex;
     fossil_threads_mutex_init(&mutex);
@@ -159,14 +159,14 @@ FOSSIL_TEST_CASE(c_cond_waiter_count_increments_and_decrements) {
 // * Fossil Logic Test Pool
 // * * * * * * * * * * * * * * * * * * * * * * * *
 FOSSIL_TEST_GROUP(c_cond_tests) {
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_init_and_dispose);
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_init_null);
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_signal_and_broadcast_invalid);
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_wait_invalid);
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_timedwait_invalid);
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_is_valid_and_waiter_count);
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_reset);
-    FOSSIL_TEST_ADD(c_cond_fixture, c_cond_waiter_count_increments_and_decrements);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_init_and_dispose);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_init_null);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_signal_and_broadcast_invalid);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_wait_invalid);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_timedwait_invalid);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_is_valid_and_waiter_count);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_reset);
+    FOSSIL_ADD_TEST(c_cond_fixture, c_cond_waiter_count_increments_and_decrements);
 
-    FOSSIL_TEST_REGISTER(c_cond_fixture);
+    FOSSIL_ADD_SUITE(c_cond_fixture);
 } // end of tests

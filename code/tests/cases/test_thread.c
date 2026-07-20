@@ -17,12 +17,12 @@
  * under the License.
  *
  * Author: Michael Gene Brockus (Dreamer)
- * Date: 04/05/2014
+ * Date: 04/05/2013
  *
- * Copyright (C) 2014-2025 Fossil Logic. All rights reserved.
+ * Copyright (C) 2013-Current Fossil Logic. All rights reserved.
  * -----------------------------------------------------------------------------
  */
-#include <fossil/pizza/framework.h>
+#include <fossil/maip/framework.h>
 #include "fossil/threads/framework.h"
 
 
@@ -33,7 +33,7 @@
 // mock objects are set here.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_SUITE(c_thread_fixture);
+FOSSIL_SUITE(c_thread_fixture);
 
 FOSSIL_SETUP(c_thread_fixture) {
     // Setup the test fixture
@@ -74,12 +74,12 @@ static void *test_thread_func_sleep(void *arg) {
 
 /* ---------- Lifecycle ---------- */
 
-FOSSIL_TEST_CASE(c_thread_dispose_null_safe) {
+FOSSIL_TEST(c_thread_dispose_null_safe) {
     fossil_threads_thread_dispose(NULL);
     ASSUME_ITS_TRUE(1);
 }
 
-FOSSIL_TEST_CASE(c_thread_create_twice_should_fail) {
+FOSSIL_TEST(c_thread_create_twice_should_fail) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -93,7 +93,7 @@ FOSSIL_TEST_CASE(c_thread_create_twice_should_fail) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_join_twice_should_fail) {
+FOSSIL_TEST(c_thread_join_twice_should_fail) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -109,7 +109,7 @@ FOSSIL_TEST_CASE(c_thread_join_twice_should_fail) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_detach_twice_should_fail) {
+FOSSIL_TEST(c_thread_detach_twice_should_fail) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -125,7 +125,7 @@ FOSSIL_TEST_CASE(c_thread_detach_twice_should_fail) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_sleep_and_return_value) {
+FOSSIL_TEST(c_thread_sleep_and_return_value) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -141,7 +141,7 @@ FOSSIL_TEST_CASE(c_thread_sleep_and_return_value) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_equal_null_and_self) {
+FOSSIL_TEST(c_thread_equal_null_and_self) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -153,7 +153,7 @@ FOSSIL_TEST_CASE(c_thread_equal_null_and_self) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_create_and_join) {
+FOSSIL_TEST(c_thread_create_and_join) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -166,7 +166,7 @@ FOSSIL_TEST_CASE(c_thread_create_and_join) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_create_and_detach) {
+FOSSIL_TEST(c_thread_create_and_detach) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -179,14 +179,14 @@ FOSSIL_TEST_CASE(c_thread_create_and_detach) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_yield_and_sleep) {
+FOSSIL_TEST(c_thread_yield_and_sleep) {
     int rc = fossil_threads_thread_yield();
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_OK);
     rc = fossil_threads_thread_sleep_ms(5);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_OK);
 }
 
-FOSSIL_TEST_CASE(c_thread_create_invalid_args) {
+FOSSIL_TEST(c_thread_create_invalid_args) {
     int rc = fossil_threads_thread_create(NULL, test_thread_func_noop, NULL);
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_EINVAL);
 
@@ -198,7 +198,7 @@ FOSSIL_TEST_CASE(c_thread_create_invalid_args) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_priority_set_get) {
+FOSSIL_TEST(c_thread_priority_set_get) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -213,7 +213,7 @@ FOSSIL_TEST_CASE(c_thread_priority_set_get) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_cancel_and_is_running) {
+FOSSIL_TEST(c_thread_cancel_and_is_running) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -234,7 +234,7 @@ FOSSIL_TEST_CASE(c_thread_cancel_and_is_running) {
     fossil_threads_thread_dispose(&thread);
 }
 
-FOSSIL_TEST_CASE(c_thread_get_retval) {
+FOSSIL_TEST(c_thread_get_retval) {
     fossil_threads_thread_t thread;
     fossil_threads_thread_init(&thread);
 
@@ -256,19 +256,19 @@ FOSSIL_TEST_CASE(c_thread_get_retval) {
 // * Fossil Logic Test Pool
 // * * * * * * * * * * * * * * * * * * * * * * * *
 FOSSIL_TEST_GROUP(c_thread_tests) {    
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_dispose_null_safe);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_create_twice_should_fail);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_join_twice_should_fail);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_detach_twice_should_fail);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_sleep_and_return_value);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_equal_null_and_self);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_create_and_join);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_create_and_detach);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_yield_and_sleep);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_create_invalid_args);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_priority_set_get);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_cancel_and_is_running);
-    FOSSIL_TEST_ADD(c_thread_fixture, c_thread_get_retval);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_dispose_null_safe);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_create_twice_should_fail);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_join_twice_should_fail);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_detach_twice_should_fail);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_sleep_and_return_value);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_equal_null_and_self);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_create_and_join);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_create_and_detach);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_yield_and_sleep);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_create_invalid_args);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_priority_set_get);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_cancel_and_is_running);
+    FOSSIL_ADD_TEST(c_thread_fixture, c_thread_get_retval);
 
-    FOSSIL_TEST_REGISTER(c_thread_fixture);
+    FOSSIL_ADD_SUITE(c_thread_fixture);
 } // end of tests

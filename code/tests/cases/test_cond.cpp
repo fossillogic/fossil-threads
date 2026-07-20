@@ -17,12 +17,12 @@
  * under the License.
  *
  * Author: Michael Gene Brockus (Dreamer)
- * Date: 04/05/2014
+ * Date: 04/05/2013
  *
- * Copyright (C) 2014-2025 Fossil Logic. All rights reserved.
+ * Copyright (C) 2013-Current Fossil Logic. All rights reserved.
  * -----------------------------------------------------------------------------
  */
-#include <fossil/pizza/framework.h>
+#include <fossil/maip/framework.h>
 #include "fossil/threads/framework.h"
 
 
@@ -33,7 +33,7 @@
 // mock objects are set here.
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
-FOSSIL_TEST_SUITE(cpp_cond_fixture);
+FOSSIL_SUITE(cpp_cond_fixture);
 
 FOSSIL_SETUP(cpp_cond_fixture) {
     // Setup the test fixture
@@ -53,7 +53,7 @@ FOSSIL_TEARDOWN(cpp_cond_fixture) {
 
 using fossil::threads::Cond;
 
-FOSSIL_TEST_CASE(cpp_cond_raii_init_and_dispose) {
+FOSSIL_TEST(cpp_cond_raii_init_and_dispose) {
     Cond* cond = nullptr;
     try {
         cond = new Cond();
@@ -65,7 +65,7 @@ FOSSIL_TEST_CASE(cpp_cond_raii_init_and_dispose) {
     // No explicit check for valid, as RAII handles it
 }
 
-FOSSIL_TEST_CASE(cpp_cond_raii_signal_and_broadcast) {
+FOSSIL_TEST(cpp_cond_raii_signal_and_broadcast) {
     Cond cond;
     int rc1 = cond.signal();
     int rc2 = cond.broadcast();
@@ -73,7 +73,7 @@ FOSSIL_TEST_CASE(cpp_cond_raii_signal_and_broadcast) {
     ASSUME_ITS_EQUAL_I32(rc2, FOSSIL_THREADS_COND_OK);
 }
 
-FOSSIL_TEST_CASE(cpp_cond_raii_wait_invalid_mutex) {
+FOSSIL_TEST(cpp_cond_raii_wait_invalid_mutex) {
     Cond cond;
     int rc1 = cond.wait(nullptr);
     int rc2 = cond.timed_wait(nullptr, 100);
@@ -81,7 +81,7 @@ FOSSIL_TEST_CASE(cpp_cond_raii_wait_invalid_mutex) {
     ASSUME_ITS_EQUAL_I32(rc2, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(cpp_cond_raii_wait_and_timedwait) {
+FOSSIL_TEST(cpp_cond_raii_wait_and_timedwait) {
     Cond cond;
     fossil_threads_mutex_t mutex;
     memset(&mutex, 0, sizeof(mutex));
@@ -92,7 +92,7 @@ FOSSIL_TEST_CASE(cpp_cond_raii_wait_and_timedwait) {
     ASSUME_ITS_EQUAL_I32(rc2, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(cpp_cond_is_valid_and_waiter_count) {
+FOSSIL_TEST(cpp_cond_is_valid_and_waiter_count) {
     using fossil::threads::Cond;
     Cond cond;
     ASSUME_ITS_TRUE(cond.is_valid());
@@ -106,7 +106,7 @@ FOSSIL_TEST_CASE(cpp_cond_is_valid_and_waiter_count) {
     ASSUME_ITS_TRUE(fossil_threads_cond_waiter_count(invalid) < 0);
 }
 
-FOSSIL_TEST_CASE(cpp_cond_reset) {
+FOSSIL_TEST(cpp_cond_reset) {
     using fossil::threads::Cond;
     Cond cond;
     ASSUME_ITS_TRUE(cond.is_valid());
@@ -120,7 +120,7 @@ FOSSIL_TEST_CASE(cpp_cond_reset) {
     ASSUME_ITS_EQUAL_I32(rc, FOSSIL_THREADS_COND_EINVAL);
 }
 
-FOSSIL_TEST_CASE(cpp_cond_waiter_count_increments_and_decrements) {
+FOSSIL_TEST(cpp_cond_waiter_count_increments_and_decrements) {
     using fossil::threads::Cond;
     Cond cond;
     fossil_threads_mutex_t mutex;
@@ -138,13 +138,13 @@ FOSSIL_TEST_CASE(cpp_cond_waiter_count_increments_and_decrements) {
 // * Fossil Logic Test Pool
 // * * * * * * * * * * * * * * * * * * * * * * * *
 FOSSIL_TEST_GROUP(cpp_cond_tests) {
-    FOSSIL_TEST_ADD(cpp_cond_fixture, cpp_cond_raii_init_and_dispose);
-    FOSSIL_TEST_ADD(cpp_cond_fixture, cpp_cond_raii_signal_and_broadcast);
-    FOSSIL_TEST_ADD(cpp_cond_fixture, cpp_cond_raii_wait_invalid_mutex);
-    FOSSIL_TEST_ADD(cpp_cond_fixture, cpp_cond_raii_wait_and_timedwait);
-    FOSSIL_TEST_ADD(cpp_cond_fixture, cpp_cond_is_valid_and_waiter_count);
-    FOSSIL_TEST_ADD(cpp_cond_fixture, cpp_cond_reset);
-    FOSSIL_TEST_ADD(cpp_cond_fixture, cpp_cond_waiter_count_increments_and_decrements);
+    FOSSIL_ADD_TEST(cpp_cond_fixture, cpp_cond_raii_init_and_dispose);
+    FOSSIL_ADD_TEST(cpp_cond_fixture, cpp_cond_raii_signal_and_broadcast);
+    FOSSIL_ADD_TEST(cpp_cond_fixture, cpp_cond_raii_wait_invalid_mutex);
+    FOSSIL_ADD_TEST(cpp_cond_fixture, cpp_cond_raii_wait_and_timedwait);
+    FOSSIL_ADD_TEST(cpp_cond_fixture, cpp_cond_is_valid_and_waiter_count);
+    FOSSIL_ADD_TEST(cpp_cond_fixture, cpp_cond_reset);
+    FOSSIL_ADD_TEST(cpp_cond_fixture, cpp_cond_waiter_count_increments_and_decrements);
 
-    FOSSIL_TEST_REGISTER(cpp_cond_fixture);
+    FOSSIL_ADD_SUITE(cpp_cond_fixture);
 } // end of tests
