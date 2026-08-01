@@ -5,7 +5,7 @@ if get_option('with_test').enabled()
     test_cases = ['unit_runner.c', cards.stdout().strip().split('\n')]
 
     maip_c = executable('maip', test_cases, include_directories: dir,
-        dependencies: [dependency('fossil-test'), fossil_threads_dep])
+        dependencies: [dependency('fossil-test'), dependency('threads'), fossil_threads_dep])
 
     test('fossil testing C', maip_c)
 endif
